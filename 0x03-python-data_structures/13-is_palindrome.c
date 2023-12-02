@@ -1,94 +1,79 @@
+/*
+ * File: 13-is_palindrome.c
+ * Auth: Mbah Nkemdinma
+ */
+
 #include "lists.h"
 
-/**
- * _strlen_recursion - returns length of a string
- * @s: string to be assessed
- * Return: length of string
- */
-
-int _strlen_recursion(char *s)
-{
-	if (*s == '\0')
-		return (0);
-	return (_strlen_recursion(s + 1) + 1);
-}
+listint_t *reverse_listint(listint_t **head);
+int is_palindrome(listint_t **head);
 
 /**
- * check_palin - check if string is a palindrome
- * @s: string to be assessed
- * @start: first index
- * @end: end index
- * Return: 1 if palindrome, 0 if not palindrome
- */
-
-int check_palin(char *s, int start, int end)
-{
-	if (s[start] != s[end])
-		return (0);
-	if (start >= end)
-		return (1);
-	return (check_palin(s, start + 1, end - 1));
-}
-
-/**
- * is_palin - determine if string is a palindrome
- * @s: string to be assessed
- * Return: 1 if string is palindrome and 0 if not
- */
-
-int is_palin(char *s)
-{
-	int end;
-
-	if (*s == '\0')
-		return (1);
-	end = _strlen_recursion(s) - 1;
-	return (check_palin(s, 0, end));
-}
-
-/**
- * is_palindrome - check if a singly linked list is a palindrome
+ * reverse_listint - Reverses a singly-linked listint_t list.
+ * @head: A pointer to the starting node of the list to reverse.
  *
- * @head: start of linked list
- * Return: 0 if it is not a palindrome, 1 if it is a palindrome
+ * Return: A pointer to the head of the reversed list.
+ */
+
+listint_t *reverse_listint(listint_t **head)
+{
+	listint_t *node = *head, *next, *prev = NULL;
+
+	while (node)
+	{
+		next = node->next;
+		node->next = prev;
+		prev = node;
+		node = next;
+	}
+
+	*head = prev;
+	return (*head);
+}
+
+/**
+ * is_palindrome - Checks if a singly linked list is a palindrome.
+ * @head: A pointer to the head of the linked list.
+ *
+ * Return: If the linked list is not a palindrome - 0.
+ *         If the linked list is a palindrome - 1.
  */
 
 int is_palindrome(listint_t **head)
 {
-	listint_t *temp = NULL;
-	listint_t *p = NULL;
-	char *s;
-	int numNodes = 0;
-	int i = 0;
+	listint_t *tmp, *rev, *mid;
+	size_t size = 0, i;
 
-	if (*head == NULL || head == NULL)
+	if (*head == NULL || (*head)->next == NULL)
 		return (1);
 
-	p = *head;
-	while (p != NULL)
+	tmp = *head;
+	while (tmp)
 	{
-		p = p->next;
-		numNodes++;
+		size++;
+		tmp = tmp->next;
 	}
 
-	s = malloc(sizeof(int) * numNodes);
-	if (s == NULL)
-		return (-1);
+	tmp = *head;
+	for (i = 0; i < (size / 2) - 1; i++)
+		tmp = tmp->next;
 
-	temp = *head;
+	if ((size % 2) == 0 && tmp->n != tmp->next->n)
+		return (0);
 
-	while (temp != NULL)
+	tmp = tmp->next->next;
+	rev = reverse_listint(&tmp);
+	mid = rev;
+
+	tmp = *head;
+	while (rev)
 	{
-		s[i] = temp->n;
-		temp = temp->next;
-		i++;
+		if (tmp->n != rev->n)
+			return (0);
+		tmp = tmp->next;
+		rev = rev->next;
 	}
+	reverse_listint(&mid);
 
-	if (is_palin(s) == 1)
-	{
-		free(s);
-		return (1);
-	}
-	free(s);
-	return (0);
+	return (1);
 }
