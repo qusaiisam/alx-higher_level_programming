@@ -1,23 +1,27 @@
 #!/usr/bin/python3
-"""
-Module add-integer
-add two integers
-"""
+"""Module for add_integer method."""
 
 
 def add_integer(a, b=98):
-    """ This function return the sum of intgers
-    or the int cast of floats
+    """Adds two integers.
+
+    Args:
+        a: the first integer.
+        b: the second integer, default 98.
+
+    Raises:
+        TypeError: if a, b are not int, float.
+
+    Returns:
+        The sum of the two integers.
     """
 
-    if type(a) != int and type(a) != float:
-        raise TypeError("a must be an integer")
-    if type(b) != int and type(b) != float:
-        raise TypeError("b must be an integer")
+    if type(a) not in (int, float):
+        raise TypeError('a must be an integer')
+    if type(b) not in (int, float):
+        raise TypeError('b must be an integer')
+    return int(a) + int(b)
 
-    if type(a) == float:
-        a = int(a)
-    if type(b) == float:
-        b = int(b)
-
-    return a + b
+if __name__ == "__main__":
+    import doctest
+    doctest.testfile("tests/0-add_integer.txt")
